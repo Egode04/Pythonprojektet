@@ -8,7 +8,7 @@ import sys
 import os
 
 def playBackgroundSound(song):
-    songs = [".\\songs\\NarutoFightingSong.wav", ".\\songs\\NarutoBattleSong.wav", ".\\songs\\StayWIthMe_1nonly.wav", ".\\songs\\UniversalCollapse.wav"]
+    songs = [".\\songs\\NarutoFightingSong.wav", ".\\songs\\NarutoBattleSong.wav", ".\\songs\\StayWIthMe_1nonly.wav", ".\\songs\\UniversalCollapse.wav", ".\\songs\\TinyLittleAdiantum.wav"]
     if song == "fight":
         r = songs[0]
     elif song == "battle":
@@ -17,8 +17,8 @@ def playBackgroundSound(song):
         r = songs[2]
     elif song == "boss":
         r = songs[3]
-    elif song == "random":
-        r = rand.choice(songs)
+    elif song == "uwu_1":
+        r = songs[4]
     winsound.PlaySound(r, winsound.SND_ASYNC)
 
 def stopBackgroundSound():
@@ -27,7 +27,7 @@ def stopBackgroundSound():
 class Player(object):
     name = str()
     LVL = int() # level
-    DSP = int(9) # default stat points
+    DSP = int(6) # default stat points
     SP = int() # stat points
     AD = int(2) # attack damage
     HP = int(8) # hit points
@@ -60,7 +60,7 @@ class Player(object):
     potionBonusSpeed = float(1)
 
     def set_name(self):
-        self.name = str(input("Enter Your Name: "))
+        self.name = str(input(f"Enter Your {color.yellow}Name{color.end}: "))
     
     def set_lvl(self, lvl):
         self.LVL = lvl
@@ -197,10 +197,10 @@ class Player(object):
 
             clear(0)
             print(f"""
-    SP Added to Stats:
-        Attack Damage: +{ead}
-        Hit Points: +{ehp}
-        Reaction Speed: +{ers}
+    {color.blue}SP{color.end} Added to {color.blue}Stats{color.end}:
+        {color.red}Attack Damage{color.end}: +{color.red}{ead}{color.end}
+        {color.pink}Hit Points{color.end}: +{color.pink}{ehp}{color.end}
+        {color.aqua}Reaction Speed{color.end}: +{color.aqua}{ers}{color.end}
             """)
             pause()
             clear(0)
@@ -209,9 +209,9 @@ class Player(object):
 class Monster(object):
     type = str()
     LVL = int()
-    AD = int(1)
-    HP = int(1)
-    RS = int(1)
+    AD = int(2)
+    HP = int(8)
+    RS = int(2)
     SP = int()
     DSP = int(3)
 
@@ -219,6 +219,9 @@ class Monster(object):
     monsterTypes = ["Skeleton", "Zombie", "Slime"]
 
     def newMonster(self):
+        self.AD = 2
+        self.HP = 8
+        self.RS = 1
         MinimumMonsterLVL = player.LVL-2
         if MinimumMonsterLVL < 1:
             MinimumMonsterLVL = 1
@@ -235,7 +238,6 @@ class Monster(object):
             rrs = rand.randint(0, self.SP)
             self.RS += rrs
             self.SP -= rrs
-
     
     def monsterStats(self):
         clear(0)
@@ -245,10 +247,19 @@ class Monster(object):
         Hit Points: {self.HP}
         Reaction Speed: {self.RS}      
 """)
+    
+    def gainXP(self):
+        # xp = monster.LVL ** 2 + 2
+        addXP = monster.LVL ** 2 + 2
+        player.XP += addXP
+        typing(f"""
+    You {color.light_yellow}Gain{color.end} {color.aqua}{addXP} Experience Points{color.end}!
+""", 1)
+        LvlUp()
 
 intro1 = f"""
-Welcome New Adventurer!
-My Name is {color.yellow}Athena{color.end} and I am Going to Guide You Through Your {color.green}Adventure{color.end}!
+Welcome New {color.green}Adventurer{color.end}!
+My Name is {color.yellow}Athena{color.end} and I am Going to {color.light_yellow}Guide{color.end} You Through Your {color.green}Adventure{color.end}!
 What is Your {color.yellow}Name{color.end}?
     """
 intro2 = f"""
@@ -293,19 +304,21 @@ What is Your Current {color.green}Level{color.end}?
     player.setOrRand_stats()
     xpToLvlUp()
 
+    
+
 # Adding weapon, armor & artifact bonus
 def weaponBonus():
     player.AD -= player.weaponBonus[0]
     player.HP -= player.weaponBonus[1]
     player.RS -= player.weaponBonus[2]
     if player.weapon == 'Longsword':
-        player.weaponBonus = [5, 0, -1]
+        player.weaponBonus = [3, 0, -1]
     elif player.weapon == 'Shortsword':
-        player.weaponBonus = [3, 0, 0]
+        player.weaponBonus = [2, 0, 0]
     elif player.weapon == 'Dagger':
-        player.weaponBonus = [2, 0, 2]
+        player.weaponBonus = [1, 0, 1]
     elif player.weapon == 'Bow':
-        player.weaponBonus = [6, 0, -1]
+        player.weaponBonus = [4, 0, -1]
     player.AD += player.weaponBonus[0]
     player.HP += player.weaponBonus[1]
     player.RS += player.weaponBonus[2]
@@ -319,7 +332,7 @@ def armorBonus():
     elif player.armor == 'Padded Leather Armor':
         player.armorBonus = [0, 6, 0]
     elif player.armor == 'Assassins Robe':
-        player.armorBonus = [-1, 2, 8]
+        player.armorBonus = [-1, -7, 8]
     player.AD += player.armorBonus[0]
     player.HP += player.armorBonus[1]
     player.RS += player.armorBonus[2]
@@ -329,13 +342,13 @@ def artifactBonus():
     player.HP -= player.artifactBonus[1]
     player.RS -= player.artifactBonus[2]
     if player.artifact == 'Red Gem':
-        player.artifactBonus = [6, 2, 0]
+        player.artifactBonus = [3, 1, 0]
     elif player.artifact == 'Green Gem':
-        player.artifactBonus = [0, 8, 0]
+        player.artifactBonus = [0, 4, 0]
     elif player.artifact == 'Blue Gem':
-        player.artifactBonus = [2, 0, 6]
+        player.artifactBonus = [1, 0, 3]
     elif player.artifact == 'Purple Gem':
-        player.artifactBonus = [4, 6, 4]
+        player.artifactBonus = [2, 3, 2]
     player.AD += player.artifactBonus[0]
     player.HP += player.artifactBonus[1]
     player.RS += player.artifactBonus[2]
@@ -381,11 +394,16 @@ def statsUp():
     print(f"""
     You Have {color.blue}{player.SP} Stat Points{color.end} to Use!
         {color.red}Attack Damage: {player.AD}
-        {color.pink}Hit Points: {player.HP}
+        {color.pink}Hit Points: {player.HP} / {player.MAX_HP}
         {color.aqua}Reaction Speed: {player.RS}{color.end}
             """)
     while player.SP > 0:
-        player.show_stats()
+        print(f"""
+    You Have {color.blue}{player.SP} Stat Points{color.end} to Use!
+        {color.red}Attack Damage: {player.AD}
+        {color.pink}Hit Points: {player.HP} / {player.MAX_HP}
+        {color.aqua}Reaction Speed: {player.RS}{color.end}
+            """)
         try:
             ad = int(input(f"SP to add to {color.pink}Attack Damage{color.end}: "))
             if ad > player.SP:
@@ -419,7 +437,8 @@ def statsUp():
 """, 1)
                 continue
             else:
-                player.AD += hp
+                player.HP += hp
+                player.MAX_HP += hp
                 player.SP -= hp
         except:
             typing(f"{color.red}Invalid Input!{color.end}", 1)
@@ -439,7 +458,7 @@ def statsUp():
 """, 1)
                 continue
             else:
-                player.AD += rs
+                player.RS += rs
                 player.SP -= rs
         except:
             typing(f"{color.red}Invalid Input!{color.end}", 1)
@@ -489,10 +508,10 @@ def tutorial(tut):
         else:
             typing(f"""{color.red}Invalid Input!{color.end}
 """, 1)
-        tut = input("Tutorial [Y/N]: ")
+        tut = input(f"Tutorial [{color.green}Y{color.end}/{color.red}N{color.end}]: ")
 
 clear(0)
-tutYesNo = tutorial(input("Tutorial [Y/N]: "))
+tutYesNo = tutorial(input(f"Tutorial [{color.green}Y{color.end}/{color.red}N{color.end}]: "))
 
 def RSDiff():
     itemBonus()
@@ -531,11 +550,27 @@ def attacking():
         while index <= multipleAttacks[0]:
             damage(True)
             index += 1
+
         typing(f"""
     You Attack the {color.red}{monster.type}{color.end} With Your {color.green}{player.weapon}{color.end} {multipleAttacks[0]} Times!
 """, 2)
+        monster.monsterStats()
         pause()
-        player.show_stats_only()
+        if monster.HP > 0:
+            index = 1
+            while index <= multipleAttacks[0]:
+                damage(False)
+                index += 1
+            typing(f"""
+        The {color.red}{monster.type}{color.end} Attacks You {multipleAttacks[0]} Times!
+    """, 2)
+            player.show_stats_only()
+            pause()
+        else:
+            typing(f"""
+    You Have {color.light_yellow}Slayed{color.end} the {monster.type}!
+""", 2)
+            monster.gainXP()
 
     else: # Monster attacks
         index = 1
@@ -545,14 +580,33 @@ def attacking():
         typing(f"""
     The {color.red}{monster.type}{color.end} Attacks You {multipleAttacks[0]} Times!
 """, 2)
+        player.show_stats_only()
         pause()
-        monster.monsterStats()
+        if player.HP > 0:
+            index = 1
+            while index <= multipleAttacks[0]:
+                damage(False)
+                index += 1
+            typing(f"""
+        The {color.red}{monster.type}{color.end} Attacks You {multipleAttacks[0]} Times!
+    """, 2)
+            player.show_stats_only()
+            pause()
+        else:
+            typing(f"""
+    {color.red}You Have Died!{color.end}
+""", 5)
+            pause()
+
+def attack():
+    multipleAttacks = multipleStrikes()
 
 def attackSetup(): # Needed
     itemBonus()
     RSDiff()
     multipleStrikes()
     attacking()
+    #attack()
 
 def healing(modifier):
     itemBonus()
@@ -575,7 +629,7 @@ def healing(modifier):
 
 def openChest():
     # List of Different Chests You Can Find
-    chestTypes = ["Weapon Chest", "Armor Chest", "Artifact Chest", "Item Chest"]
+    chestTypes = [f"{color.pink}Weapon Chest{color.end}", f"{color.pink}Armor Chest{color.end}", f"{color.pink}Artifact Chest{color.end}", f"{color.pink}Item Chest{color.end}"]
 
     # Defines Which Type of Chest You Found
     chestType = rand.choice(chestTypes)
@@ -601,67 +655,67 @@ def openChest():
         s = ""
     
     typing(f"""
-    You Found a{n} {chestType} Containing {selectedItem}{s}!
+    You Found a{n} {chestType} Containing {color.light_pink}{selectedItem}{s}{color.end}!
 """, 3)
 
     # Asks If We Want to Equip the New Weapon If We Find a Weapon Chest
     if chestType == chestTypes[0]:
         while True:
-            changeWeapon = str(input(f"Do You Want to Replace {player.weapon} With the {selectedItem} [Y/N]: "))
+            changeWeapon = str(input(f"Do You Want to {color.light_yellow}Replace {color.pink}{player.weapon}{color.end} With the {color.light_pink}{selectedItem}{color.end} [{color.green}Y{color.end}/{color.red}N{color.end}]: "))
             if changeWeapon.lower() == "y":
                 typing(f"""
-    {player.weapon} Has Been Replaced With {selectedItem}
+    {color.pink}{player.weapon}{color.end} Has Been {color.light_yellow}Replaced{color.end} With {color.light_pink}{selectedItem}{color.end}!
     """, 2)
                 player.weapon = selectedItem
                 break
             elif changeWeapon.lower() == "n":
                 typing(f"""
-        You Decide You Don't Need the {selectedItem} so You Leave it Behind!
+        You {color.light_yellow}Decide{color.end} You {color.light_red}Don't{color.end} Need the {color.light_pink}{selectedItem}{color.end} so You {color.light_yellow}Leave{color.end} it Behind!
     """, 2)
                 break
             else:
-                typing("""
-        Invalid Input!            
+                typing(f"""
+        {color.red}Invalid Input!{color.end}
     """, 1)
 
     # Asks If We Want to Equip the New Armor If We Find an Armor Chest
     if chestType == chestTypes[1]:
         while True:
-            changeArmor = str(input(f"Do You Want to Replace {player.armor} With {selectedItem} [Y/N]: "))
+            changeArmor = str(input(f"Do You Want to {color.light_yellow}Replace{color.end} {color.pink}{player.armor}{color.end} With {color.light_pink}{selectedItem}{color.end} [{color.green}Y{color.end}/{color.red}N{color.end}]: "))
             if changeArmor.lower() == "y":
                 typing(f"""
-    {player.armor} Has Been Replaced With {selectedItem}
+    {color.pink}{player.armor}{color.end} Has Been {color.light_yellow}Replaced{color.end} With {color.light_pink}{selectedItem}{color.end}!
     """, 2)
                 player.armor = selectedItem
                 break
             elif changeArmor.lower() == "n":
                 typing(f"""
-        You Decide You Don't Need the {selectedItem} so You Leave it Behind!
+        You {color.light_yellow}Decide{color.end} You {color.light_red}Don't{color.end} Need the {color.light_pink}{selectedItem}{color.end} so You {color.light_yellow}Leave{color.end} it Behind!
     """, 2)
                 break
             else:
-                typing("""
-        Invalid Input!            
+                typing(f"""
+        {color.red}Invalid Input!{color.end}            
     """, 1)
 
     # Asks If We Want to Equip the New Artifact If We Find an Artifact Chest
     if chestType == chestTypes[2]:
         while True:
-            changeArtifact = str(input(f"Do You Want to Replace {player.artifact} With {selectedItem} [Y/N]: "))
+            changeArtifact = str(input(f"Do You Want to {color.light_yellow}Replace {color.pink}{player.artifact}{color.end} With {color.light_pink}{selectedItem}{color.end} [{color.green}Y{color.end}/{color.red}N{color.end}]: "))
             if changeArtifact.lower() == "y":
                 typing(f"""
-    {player.artifact} Has Been Replaced With {selectedItem}
+    {color.pink}{player.artifact}{color.end} Has Been {color.light_yellow}Replaced{color.end} With {color.light_pink}{selectedItem}{color.end}!
     """, 2)
                 player.artifact = selectedItem
                 break
             elif changeArtifact.lower() == "n":
                 typing(f"""
-        You Decide You Don't Need the {selectedItem} so You Leave it Behind!
+        You {color.light_yellow}Decide{color.end} You {color.light_red}Don't{color.end} Need the {color.light_pink}{selectedItem}{color.end} so You {color.light_yellow}Leave{color.end} it Behind!
     """, 2)
                 break
             else:
-                typing("""
-        Invalid Input!            
+                typing(f"""
+        {color.red}Invalid Input!{color.end}            
     """, 1)
 
     # If We Find Arrows in the Item Chest
@@ -692,71 +746,71 @@ def openChest():
                 else:
                     s = "s"
                 typing(f"""
-    {arrows} Arrow{s} Has Been Added to Your Quiver!
+    {color.light_pink}{arrows} Arrow{s}{color.end} Has Been {color.light_yellow}Added{color.end} to Your {color.pink}Quiver{color.end}!
 """, 2)
             else:
                 typing(f"""
-    Your Quiver is Full!                
+    Your {color.pink}Quiver{color.end} is {color.light_red}Full{color.end}!                
 """, 2)
         else:
             if player.SLOT1 and player.SLOT2 and player.SLOT3 != None:
                 typing(f"""
-    Select the Item You Want to Replace:
+    {color.light_yellow}Select{color.end} the {color.pink}Item{color.end} You Want to {color.light_yellow}Replace{color.end}:
 """, 2)
                 print(f"""
-        Slot 1: {player.SLOT1}
-        Slot 2: {player.SLOT2}
-        Slot 3: {player.SLOT3}
+        {color.pink}Slot 1{color.end}: {color.light_yellow}{player.SLOT1}{color.end}
+        {color.pink}Slot 2{color.end}: {color.light_yellow}{player.SLOT2}{color.end}
+        {color.pink}Slot 3{color.end}: {color.light_yellow}{player.SLOT3}{color.end}
 """)
                 while True:
-                    replaceItem = str(input("(1), (2), (3) or None: "))
+                    replaceItem = str(input(f"{color.light_pink}(1){color.end}, {color.light_pink}(2){color.end}, {color.light_pink}(3){color.end} or {color.red}None{color.end}: "))
                     if replaceItem == "1" or "2" or "3":
                         break
                     elif replaceItem.lower() == "none":
                         break
                     else:
-                        typing("""
-    Invalid Input!
+                        typing(f"""
+    {color.red}Invalid Input!{color.end}
 """, 1)
                 
                 if replaceItem == "1":
                     player.SLOT1 = selectedItem
                     typing(f"""
-    {selectedItem} Has Been Added to Your Inventory in Item Slot 1
+    {color.light_pink}{selectedItem}{color.end} Has Been {color.light_yellow}Added{color.end} to Your {color.pink}Inventory{color.end} in {color.pink}Item Slot {color.light_yellow}1{color.end}!
 """, 2)
                 elif replaceItem == "2":
                     player.SLOT2 = selectedItem
                     typing(f"""
-    {selectedItem} Has Been Added to Your Inventory in Item Slot 2
+    {color.light_pink}{selectedItem}{color.end} Has Been {color.light_yellow}Added{color.end} to Your {color.pink}Inventory{color.end} in {color.pink}Item Slot {color.light_yellow}2{color.end}!
 """, 2)
                 elif replaceItem == "3":
                     player.SLOT3 = selectedItem
                     typing(f"""
-    {selectedItem} Has Been Added to Your Inventory in Item Slot 3
+    {color.light_pink}{selectedItem}{color.end} Has Been {color.light_yellow}Added{color.end} to Your {color.pink}Inventory{color.end} in {color.pink}Item Slot {color.light_yellow}3{color.end}!
 """, 2)
                 else:
                     typing(f"""
-    You Decide You Don't Need the {selectedItem} so You Leave it Behind!
+    You {color.light_yellow}Decide{color.end} You {color.light_red}Don't{color.end} Need the {color.light_pink}{selectedItem}{color.end} so You {color.light_yellow}Leave{color.end} it Behind!
 """, 2)
             elif player.SLOT1 and player.SLOT2 != None:
                 player.SLOT3 = selectedItem
                 typing(f"""
-    {selectedItem} Has Been Added to Your Inventory in Item Slot 3
+    {color.light_pink}{selectedItem}{color.end} Has Been {color.light_yellow}Added{color.end} to Your {color.pink}Inventory{color.end} in {color.pink}Item Slot {color.light_yellow}3{color.end}!
 """, 2)
             elif player.SLOT1 != None:
                 player.SLOT2 = selectedItem
                 typing(f"""
-    {selectedItem} Has Been Added to Your Inventory in Item Slot 2
+    {color.light_pink}{selectedItem}{color.end} Has Been {color.light_yellow}Added{color.end} to Your {color.pink}Inventory{color.end} in {color.pink}Item Slot {color.light_yellow}2{color.end}!
 """, 2)
             else:
                 player.SLOT1 = selectedItem
                 typing(f"""
-    {selectedItem} Has Been Added to Your Inventory in Item Slot 1
+    {color.light_pink}{selectedItem}{color.end} Has Been {color.light_yellow}Added{color.end} to Your {color.pink}Inventory{color.end} in {color.pink}Item Slot {color.light_yellow}1{color.end}!
 """, 2)
     itemBonus()
 
 # Run Functions Here
-playBackgroundSound("boss")
+playBackgroundSound("uwu_1")
 characterSetup()
 clear(0)
 if tutYesNo:
@@ -790,41 +844,46 @@ def campfireDialog():
     clear(3)
 
 def findCampfire():
+    typing(f"""
+    You Have {color.light_yellow}Found{color.end} a {color.yellow}Campfire{color.end}!
+""", 2)
     while True:
-        rest = str(input("    Would You Like to Rest at the Campfire to Restore Some Health Points [Y/N]: "))
+        rest = str(input(f"    Would You Like to {color.light_yellow}Rest{color.end} at the {color.yellow}Campfire{color.end} to {color.light_pink}Restore{color.end} Some {color.pink}Health Points{color.end} [{color.green}Y{color.end}/{color.red}N{color.end}]: "))
         if rest.lower() == "y":
             while True:
-                story = str(input("    Do You Want to Skip the Campfire Dialog [Y/N]: "))
+                story = str(input(f"    Do You Want to {color.light_yellow}Skip{color.end} the {color.yellow}Campfire Dialog{color.end} [{color.green}Y{color.end}/{color.red}N{color.end}]: "))
                 if story.lower() == "n":
                     campfireDialog()
                     break
                 elif story.lower() == "y":
                     clear(0.1)
-                    typing("""
-    Skipping Campfire Dialog!
+                    typing(f"""
+    {color.light_yellow}Skipping{color.end} {color.yellow}Campfire Dialog{color.end}!
 """, 1)
                     pause()
                     break
                 else:
-                    print("""
-    Invalid Input!
-""")
+                    typing(f"""
+    {color.red}Invalid Input!{color.end}
+""", "none")
             healing(1)
             break
         elif rest.lower() == "n":
             clear(0.1)
-            typing("""
-    You Deside That You don't Feel Tired and You Continue to Walk...
+            typing(f"""
+    You {color.light_yellow}Deside{color.end} That You {color.light_red}Don't{color.end} Feel Tired and You {color.light_yellow}Continue{color.end} to Walk...
 """, 2)
-            clear(1)
             break
         else:
-            print("""
-    Invalid Input!
-""")
+            typing(f"""
+    {color.red}Invalid Input!{color.end}
+""", "none")
     itemBonus()
 
 def showInventory():
+    s = "s"
+    if len(player.QUIVER) == 1:
+        s = ""
     clear(0)
     typing(f"""
 Player {color.pink}Inventory{color.end}:
@@ -838,10 +897,15 @@ Player {color.pink}Inventory{color.end}:
         {color.pink}Slot 1{color.end}: {color.light_yellow}{player.SLOT1}{color.end}
         {color.pink}Slot 2{color.end}: {color.light_yellow}{player.SLOT2}{color.end}
         {color.pink}Slot 3{color.end}: {color.light_yellow}{player.SLOT3}{color.end}
+        {color.pink}Quiver{color.end}: {color.light_yellow}{len(player.QUIVER)}{color.end} {color.light_pink}Arrow{s}{color.end}
+
 """, 1)
     pause()
 
 def printInventory():
+    s = "s"
+    if len(player.QUIVER) == 1:
+        s = ""
     clear(0)
     print(f"""
 Player {color.pink}Inventory{color.end}:
@@ -855,6 +919,8 @@ Player {color.pink}Inventory{color.end}:
         {color.pink}Slot 1{color.end}: {color.light_yellow}{player.SLOT1}{color.end}
         {color.pink}Slot 2{color.end}: {color.light_yellow}{player.SLOT2}{color.end}
         {color.pink}Slot 3{color.end}: {color.light_yellow}{player.SLOT3}{color.end}
+        {color.pink}Quiver{color.end}: {color.light_yellow}{len(player.QUIVER)}{color.end} {color.light_pink}Arrow{s}{color.end}
+
 """)
 
 def viewCharacter():
@@ -1026,7 +1092,7 @@ def forthMenu():
 def confirmQuit():
     clear(0)
     while True:
-        confirm = str(input(f"Are You Sure You Would Like to Quit | [{color.red}Y{color.end}/{color.green}N{color.end}]: "))
+        confirm = str(input(f"Are You Sure You Would Like to {color.light_red}Quit{color.end} | [{color.red}Y{color.end}/{color.green}N{color.end}]: "))
         if confirm.lower() == "y":
             typing(f"""
     Type {color.red}Confirm Quit{color.end} to {color.light_red}Quit{color.end}!
@@ -1044,13 +1110,91 @@ def confirmQuit():
     color.end
     clear(0)
 
-
+# Randomize events: Monster Apears, Find Chest, Find Campfire, Find Nothing...
 def explore():
-    print()
+    randEvent = []
+    for i in range(0, 14):
+        randEvent.append("Monster Apears")
+    for i in range(0, 8):
+        randEvent.append("Find Chest")
+    for i in range(0, 3):
+        randEvent.append("Find Campfire")
+    for i in range(0, 1):
+        randEvent.append("Find Nothing")
+
+    randomEvent = rand.choice(randEvent)
+
+    if randomEvent == "Monster Apears":
+        monsterApears()
+    elif randomEvent == "Find Chest":
+        openChest()
+        pause()
+    elif randomEvent == "Find Campfire":
+        findCampfire()
+    elif randomEvent == "Find Nothing":
+        findNothing()
+
+def findNothing():
+    typing(f"""
+    You {color.light_yellow}Walk{color.end} Into a Small Cave and You See...
+""", 2)
+    wait(2)
+    typing(f"""
+    {color.red}NOTHING AT ALL!{color.end}
+""", 10)
+    pause()
+
+# Attack / Open Inventory
+def battleMenu():
+    global battleLoop
+    battleLoop = bool(True)
+    while battleLoop:
+        try:
+            clear(0)
+            b1 = str(input(f"Would You Like to {color.red}Attack{color.end} or {color.pink}Open Inventory{color.end} | [{color.red}A{color.end}/{color.pink}I{color.end}]: "))
+            if b1.lower() == "a":
+                attackSetup()
+            elif b1.lower() == "i":
+                thirdMenu()
+            else:
+                typing(f"""
+    {color.red}Invalid Input!{color.end}
+""", 1)
+            if monster.HP <= 0:
+                break
+            elif player.HP <= 0:
+                break
+        except:
+                typing(f"""
+    {color.red}Invalid Input!{color.end}
+""", 1)
 
 
 
 
+
+
+
+def monsterApears():
+    playBackgroundSound("boss")
+    newMonster()
+    typing(f"""
+    You Have {color.light_red}Encountered{color.end} a {color.aqua}Level {monster.LVL}{color.end} {color.red}{monster.type}{color.end}!
+""", 2)
+    battleMenu()
+
+
+
+
+
+
+
+
+
+
+    # At the End of The Function
+    pause()
+    playBackgroundSound("uwu_1")
 
 
 
