@@ -81,6 +81,8 @@ def color(clr):
         return CVIOLET
     elif clr.lower() == "light_yellow":
         return CYELLOW
+    elif clr.lower() == "light_blue":
+        return CBLUE
     
 black = color("black")
 red = color("red")
@@ -97,5 +99,6 @@ light_green = color("light_green")
 light_aqua = color("light_aqua")
 light_pink = color("light_pink")
 light_yellow = color("light_yellow")
+light_blue = color("light_blue")
 
 print(f"This is {red}Color Red{end} and This is {yellow}Color Yellow{end}!")

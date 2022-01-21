@@ -8,4 +8,4 @@ chestItems = ["Potion of Strength", "Potion of Healing", "Potion of Healing", "P
 weapons = ['Longsword', 'Shortsword', 'Dagger', 'Bow', 'Stick']
 armors = ['Plate Armor', 'Padded Leather Armor', 'Light Robe', 'Assassins Robe']
 artifacts = ['Red Gem', 'Green Gem', 'Blue Gem', 'Purple Gem', 'Bag of Dust']
-items = ['Potion of Strength', 'Potion of Healing', 'Potion of Speed', 'Darts', 'Food', 'Arrow']
+items = ['Potion of Strength', 'Potion of Healing', 'Potion of Speed', 'Food', 'Arrow']
